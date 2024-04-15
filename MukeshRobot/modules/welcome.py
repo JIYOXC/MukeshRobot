@@ -18,7 +18,13 @@ from pyrogram.types import ChatMemberUpdated, Message
 from telegram import ChatPermissions, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram import ParseMode
 from telegram.error import BadRequest
-from telegram.ext import CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler
+from telegram.ext import (
+    CallbackContext,
+    CallbackQueryHandler,
+    CommandHandler,
+    Filters,
+    MessageHandler,
+)
 from telegram.utils.helpers import escape_markdown, mention_html, mention_markdown
 
 import MukeshRobot.modules.sql.welcome_sql as sql
