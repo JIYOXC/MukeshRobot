@@ -29,9 +29,9 @@ import MukeshRobot.modules.sql.welcome_sql as sql
 from Database.mongodb.toggle_mongo import dwelcome_off, dwelcome_on, is_dwelcome_on
 from MukeshRobot.modules.sql.global_bans_sql import is_user_gbanned
 from Infamous.temp import temp
-from MukeshRobot import DEV_USERS
+from MukeshRobot import DEV_USERS, pbot, dispatcher
 from MukeshRobot import DEV_USERS as SUDO
-from MukeshRobot import DRAGONS, EVENT_LOGS, LOGGER, OWNER_ID, app, dispatcher
+from MukeshRobot import DRAGONS, EVENT_LOGS, LOGGER, OWNER_ID, app
 from MukeshRobot.modules.helper_funcs.chat_status import (
     is_user_ban_protected,
     user_admin,
