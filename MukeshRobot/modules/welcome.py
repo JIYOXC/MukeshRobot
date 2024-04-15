@@ -1,52 +1,44 @@
+# <============================================== IMPORTS =========================================================>
 import html
+import os
 import random
 import re
+import textwrap
 import time
 from contextlib import suppress
+from datetime import datetime
 from functools import partial
 
-from telegram import (
-    ChatPermissions,
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    ParseMode,
-    Update,
-)
+import unidecode
+from PIL import Image, ImageChops, ImageDraw, ImageFont
+from pyrogram import filters as ft
+from pyrogram import filters
+from MukeshRobot import pbot as mukesh
+from pyrogram.types import ChatMemberUpdated, Message
+from telegram import ChatPermissions, InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram import ParseMode
 from telegram.error import BadRequest
-from telegram.ext import (
-    CallbackContext,
-    CallbackQueryHandler,
-    CommandHandler,
-    Filters,
-    MessageHandler,
-)
+from telegram.ext import CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler
 from telegram.utils.helpers import escape_markdown, mention_html, mention_markdown
 
-import MukeshRobot
 import MukeshRobot.modules.sql.welcome_sql as sql
-from MukeshRobot import (
-    DEMONS,
-    DEV_USERS,
-    DRAGONS,
-    EVENT_LOGS,
-    LOGGER,
-    OWNER_ID,
-    TIGERS,
-    WOLVES,
-    dispatcher,
-)
+from Database.mongodb.toggle_mongo import dwelcome_off, dwelcome_on, is_dwelcome_on
+from MukeshRobot.modules.sql.global_bans_sql import is_user_gbanned
+from Infamous.temp import temp
+from MukeshRobot import DEV_USERS, pbot, dispatcher
+from MukeshRobot import DEV_USERS as SUDO
+from MukeshRobot import DRAGONS, EVENT_LOGS, LOGGER, OWNER_ID, app
 from MukeshRobot.modules.helper_funcs.chat_status import (
     is_user_ban_protected,
     user_admin,
 )
 from MukeshRobot.modules.helper_funcs.misc import build_keyboard, revert_buttons
 from MukeshRobot.modules.helper_funcs.msg_types import get_welcome_type
-from MukeshRobot.modules.helper_funcs.string_handling import (
-    escape_invalid_curly_brackets,
-    markdown_parser,
-)
+from MukeshRobot.modules.helper_funcs.string_handling import escape_invalid_curly_brackets
 from MukeshRobot.modules.log_channel import loggable
-from MukeshRobot.modules.sql.global_bans_sql import is_user_gbanned
+#from MukeshRobot.utils.can_restrict import can_restrict
+
+# <=======================================================================================================>
 
 VALID_WELCOME_FORMATTERS = [
     "first",
@@ -72,6 +64,136 @@ ENUM_FUNC_MAP = {
 
 VERIFIED_USER_WAITLIST = {}
 
+
+# <================================================ TEMPLATE WELCOME FUNCTION =======================================================>
+async def circle(pfp, size=(259, 259)):
+    pfp = pfp.resize(size, Image.ANTIALIAS).convert("RGBA")
+    bigsize = (pfp.size[0] * 3, pfp.size[1] * 3)
+    mask = Image.new("L", bigsize, 0)
+    draw = ImageDraw.Draw(mask)
+    draw.ellipse((0, 0) + bigsize, fill=255)
+    mask = mask.resize(pfp.size, Image.ANTIALIAS)
+    mask = ImageChops.darker(mask, pfp.split()[-1])
+    pfp.putalpha(mask)
+    return pfp
+
+
+async def draw_multiple_line_text(image, text, font, text_start_height):
+    draw = ImageDraw.Draw(image)
+    image_width, image_height = image.size
+    y_text = text_start_height
+    lines = textwrap.wrap(text, width=50)
+    for line in lines:
+        line_width, line_height = font.getsize(line)
+        draw.text(
+            ((image_width - line_width) // 2, y_text), line, font=font, fill="black"
+        )
+        y_text += line_height
+
+
+async def welcomepic(pic, user, chat, user_id):
+    user = unidecode.unidecode(user)
+    background = Image.open("Extra/bgg.jpg")
+    background = background.resize(
+        (background.size[0], background.size[1]), Image.ANTIALIAS
+    )
+    pfp = Image.open(pic).convert("RGBA")
+    pfp = await circle(pfp, size=(259, 259))
+    pfp_x = 55
+    pfp_y = (background.size[1] - pfp.size[1]) // 2 + 38
+    draw = ImageDraw.Draw(background)
+    font = ImageFont.truetype("Extra/Calistoga-Regular.ttf", 42)
+    text_width, text_height = draw.textsize(f"{user} [{user_id}]", font=font)
+    text_x = 20
+    text_y = background.height - text_height - 20 - 25
+    draw.text((text_x, text_y), f"{user} [{user_id}]", font=font, fill="white")
+    background.paste(pfp, (pfp_x, pfp_y), pfp)
+    welcome_image_path = f"downloads/welcome_{user_id}.png"
+    background.save(welcome_image_path)
+    return welcome_image_path
+
+
+@mukesh.on_chat_member_updated(ft.group)
+async def member_has_joined(client, member: ChatMemberUpdated):
+    if (
+        not member.new_chat_member
+        or member.new_chat_member.status in {"banned", "left", "restricted"}
+        or member.old_chat_member
+    ):
+        return
+    user = member.new_chat_member.user if member.new_chat_member else member.from_user
+    if user.id in SUDO:
+        await client.send_message(member.chat.id, "**Global Admins Joined The Chat!**")
+        return
+    elif user.is_bot:
+        return
+    else:
+        chat_id = member.chat.id
+        welcome_enabled = await is_dwelcome_on(chat_id)
+        if not welcome_enabled:
+            return
+        if f"welcome-{chat_id}" in temp.MELCOW:
+            try:
+                await temp.MELCOW[f"welcome-{chat_id}"].delete()
+            except:
+                pass
+        mention = f"<a href='tg://user?id={user.id}'>{user.first_name}</a>"
+        joined_date = datetime.fromtimestamp(time.time()).strftime("%Y.%m. %d %H:%M:%S")
+        first_name = (
+            f"{user.first_name} {user.last_name}" if user.last_name else user.first_name
+        )
+        user_id = user.id
+        dc = user.dc_id
+        try:
+            pic = await client.download_media(
+                user.photo.big_file_id, file_name=f"pp{user_id}.png"
+            )
+        except AttributeError:
+            pic = "Extra/profilepic.png"
+        try:
+            welcomeimg = await welcomepic(
+                pic, user.first_name, member.chat.title, user_id
+            )
+            temp.MELCOW[f"welcome-{chat_id}"] = await client.send_photo(
+                member.chat.id,
+                photo=welcomeimg,
+                caption=f"**𝗛𝗲𝘆❗️{mention}, 𝗪𝗲𝗹𝗰𝗼𝗺𝗲 𝗧𝗼 {member.chat.title} 𝗚𝗿𝗼𝘂𝗽.**\n\n**➖➖➖➖➖➖➖➖➖➖➖➖**\n**𝗡𝗔𝗠𝗘 : {first_name}**\n**𝗜𝗗 : {user_id}**\n**𝗗𝗔𝗧𝗘 𝗝𝗢𝗜𝗡𝗘𝗗 : {joined_date}**",
+            )
+        except Exception as e:
+            print(e)
+        try:
+            os.remove(f"downloads/welcome_{user_id}.png")
+            os.remove(f"downloads/pp{user_id}.png")
+        except Exception:
+            pass
+
+
+@mukesh.on_message(ft.command("dwelcome on"))
+async def enable_welcome(_, message: Message):
+    chat_id = message.chat.id
+    welcome_enabled = await is_dwelcome_on(chat_id)
+    if welcome_enabled:
+        await message.reply_text("Default welcome is already enabled")
+        return
+    await dwelcome_on(chat_id)
+    await message.reply_text("New default welcome message enabled for this chat.")
+
+
+@mukesh.on_message(ft.command("dwelcome off"))
+async def disable_welcome(_, message: Message):
+    chat_id = message.chat.id
+    welcome_enabled = await is_dwelcome_on(chat_id)
+    if not welcome_enabled:
+        await message.reply_text("Default welcome is already disabled")
+        return
+    await dwelcome_off(chat_id)
+    await message.reply_text("New default welcome disabled for this chat.")
+
+
+# <=======================================================================================================>
+
+
+# <================================================ NORMAL WELCOME FUNCTION =======================================================>
 
 # do not async
 def send(update, message, keyboard, backup_message):
