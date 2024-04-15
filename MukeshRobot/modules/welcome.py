@@ -25,19 +25,19 @@ from telegram.ext import (
 )
 from telegram.utils.helpers import escape_markdown, mention_html, mention_markdown
 
-import Database.sql.welcome_sql as sql
+import MukeshRobot.modules.sql.welcome_sql as sql
 from Database.mongodb.toggle_mongo import dwelcome_off, dwelcome_on, is_dwelcome_on
 from Database.sql.global_bans_sql import is_user_gbanned
 from Infamous.temp import temp
-from Mikobot import DEV_USERS
-from Mikobot import DEV_USERS as SUDO
-from Mikobot import DRAGONS, EVENT_LOGS, LOGGER, OWNER_ID, app, dispatcher, function
-from Mikobot.plugins.helper_funcs.chat_status import check_admin, is_user_ban_protected
-from Mikobot.plugins.helper_funcs.misc import build_keyboard, revert_buttons
-from Mikobot.plugins.helper_funcs.msg_types import get_welcome_type
-from Mikobot.plugins.helper_funcs.string_handling import escape_invalid_curly_brackets
-from Mikobot.plugins.log_channel import loggable
-from Mikobot.utils.can_restrict import can_restrict
+from MukeshRobot import DEV_USERS
+from MukeshRobot import DEV_USERS as SUDO
+from MukeshRobot import DRAGONS, EVENT_LOGS, LOGGER, OWNER_ID, app, dispatcher, function
+from MukeshRobot.plugins.helper_funcs.chat_status import check_admin, is_user_ban_protected
+from MukeshRobot.plugins.helper_funcs.misc import build_keyboard, revert_buttons
+from MukeshRobot.plugins.helper_funcs.msg_types import get_welcome_type
+from MukeshRobot.plugins.helper_funcs.string_handling import escape_invalid_curly_brackets
+from MukeshRobot.plugins.log_channel import loggable
+from MukeshRobot.utils.can_restrict import can_restrict
 
 # <=======================================================================================================>
 
