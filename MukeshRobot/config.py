@@ -22,7 +22,9 @@ class Config(object):
     
     # Get your API key from https://timezonedb.com/api
 
-
+    # Database name
+    DB_NAME = "MikoDB"
+    
     # Optional fields
     BL_CHATS = []  # List of groups that you want blacklisted.
     DRAGONS = []  # User id of sudo users
