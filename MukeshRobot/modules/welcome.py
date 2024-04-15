@@ -14,7 +14,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageFont
 from pyrogram import filters as ft
 from pyrogram.types import ChatMemberUpdated, Message
 from telegram import ChatPermissions, InlineKeyboardButton, InlineKeyboardMarkup, Update
-from telegram.constants import ParseMode
+from telegram import ParseMode
 from telegram.error import BadRequest
 from telegram.ext import (
     CallbackQueryHandler,
