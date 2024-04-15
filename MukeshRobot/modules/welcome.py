@@ -182,7 +182,6 @@ async def member_has_joined(client, member: ChatMemberUpdated):
 
 @loggable
 @user_admin
-@can_restrict
 async def enable_welcome(_, message: Message):
     chat_id = message.chat.id
     welcome_enabled = await is_dwelcome_on(chat_id)
@@ -195,7 +194,6 @@ async def enable_welcome(_, message: Message):
 
 @loggable
 @user_admin
-@can_restrict
 async def disable_welcome(_, message: Message):
     chat_id = message.chat.id
     welcome_enabled = await is_dwelcome_on(chat_id)
