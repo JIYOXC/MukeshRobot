@@ -87,11 +87,13 @@ PM_START_TEXT = """
 
 buttons = [
     [
-        InlineKeyboardButton(text="🏡ʜᴏᴍᴇ", callback_data="mukesh_back"),
-        InlineKeyboardButton(text="🛡️ʀᴇꜱᴛʀɪᴄᴛ", callback_data="mukesh_"),
-        InlineKeyboardButton(text="💳ꜱᴏᴜʀᴄᴇ", callback_data="source_"),
-        InlineKeyboardButton(text="🧑‍💻ᴏᴡɴᴇʀ", url=f"tg://user?id={OWNER_ID}"),
-        InlineKeyboardButton(text="🖥️ᴄᴏᴍᴍᴀɴᴅꜱ", callback_data="Main_help"),
+        InlineKeyboardButton(text="🏡ʜᴏᴍᴇ🏡", callback_data="mukesh_back"),
+        InlineKeyboardButton(text="🛡️ʀᴇꜱᴛʀɪᴄᴛ🛡️", callback_data="mukesh_"),
+        InlineKeyboardButton(text="🖥️ᴄᴏᴍᴍᴀɴᴅꜱ🖥️", callback_data="Main_help"),
+    ],
+   [    
+        InlineKeyboardButton(text="🧑‍💻ᴏᴡɴᴇʀ🧑‍💻", url=f"tg://user?id={OWNER_ID}"),
+        InlineKeyboardButton(text="💳ꜱᴏᴜʀᴄᴇ💳", callback_data="source_"),
      ],
     [
         InlineKeyboardButton(
