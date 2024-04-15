@@ -18,6 +18,7 @@ from telegram.error import (
 from telegram.ext import (
     CallbackContext,
     CallbackQueryHandler,
+    ContextTypes,
     CommandHandler,
     Filters,
     MessageHandler,
