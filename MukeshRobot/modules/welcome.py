@@ -77,7 +77,7 @@ ENUM_FUNC_MAP = {
 VERIFIED_USER_WAITLIST = {}
 
 # <================================================ TEMPLATE WELCOME FUNCTION =======================================================>
-async def circle(pfp, size=(259, 259)):
+def circle(pfp, size=(259, 259)):
     pfp = pfp.resize(size, Image.ANTIALIAS).convert("RGBA")
     bigsize = (pfp.size[0] * 3, pfp.size[1] * 3)
     mask = Image.new("L", bigsize, 0)
@@ -89,7 +89,7 @@ async def circle(pfp, size=(259, 259)):
     return pfp
 
 
-async def draw_multiple_line_text(image, text, font, text_start_height):
+def draw_multiple_line_text(image, text, font, text_start_height):
     draw = ImageDraw.Draw(image)
     image_width, image_height = image.size
     y_text = text_start_height
@@ -102,7 +102,7 @@ async def draw_multiple_line_text(image, text, font, text_start_height):
         y_text += line_height
 
 
-async def welcomepic(pic, user, chat, user_id):
+def welcomepic(pic, user, chat, user_id):
     user = unidecode.unidecode(user)
     background = Image.open("Extra/bgg.jpg")
     background = background.resize(
@@ -136,9 +136,6 @@ def member_has_joined(client, member: ChatMemberUpdated):
     if user.id in SUDO:
         await client.send_message(member.chat.id, "**Global Admins Joined The Chat!**")
         return
-    elif user.is_bot:
-        return
-    else:
         chat_id = member.chat.id
         welcome_enabled = await is_dwelcome_on(chat_id)
         if not welcome_enabled:
