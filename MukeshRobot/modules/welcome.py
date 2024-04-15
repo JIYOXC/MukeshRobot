@@ -27,7 +27,7 @@ from telegram.utils.helpers import escape_markdown, mention_html, mention_markdo
 
 import MukeshRobot.modules.sql.welcome_sql as sql
 from Database.mongodb.toggle_mongo import dwelcome_off, dwelcome_on, is_dwelcome_on
-from Database.sql.global_bans_sql import is_user_gbanned
+from MukeshRobot.modules.sql.global_bans_sql import is_user_gbanned
 from Infamous.temp import temp
 from MukeshRobot import DEV_USERS
 from MukeshRobot import DEV_USERS as SUDO
