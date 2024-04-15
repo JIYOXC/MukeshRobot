@@ -120,7 +120,8 @@ async def welcomepic(pic, user, chat, user_id):
     return welcome_image_path
 
 
-@app.on_chat_member_updated(ft.group)
+@loggable
+@user_admin
 async def member_has_joined(client, member: ChatMemberUpdated):
     if (
         not member.new_chat_member
@@ -175,7 +176,8 @@ async def member_has_joined(client, member: ChatMemberUpdated):
             pass
 
 
-@app.on_message(ft.command("dwelcome on"))
+@loggable
+@user_admin
 @can_restrict
 async def enable_welcome(_, message: Message):
     chat_id = message.chat.id
@@ -187,7 +189,8 @@ async def enable_welcome(_, message: Message):
     await message.reply_text("New default welcome message enabled for this chat.")
 
 
-@app.on_message(ft.command("dwelcome off"))
+@loggable
+@user_admin
 @can_restrict
 async def disable_welcome(_, message: Message):
     chat_id = message.chat.id
