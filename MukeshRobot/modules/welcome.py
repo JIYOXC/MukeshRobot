@@ -32,7 +32,10 @@ from Infamous.temp import temp
 from MukeshRobot import DEV_USERS
 from MukeshRobot import DEV_USERS as SUDO
 from MukeshRobot import DRAGONS, EVENT_LOGS, LOGGER, OWNER_ID, app, dispatcher
-from MukeshRobot.plugins.helper_funcs.chat_status import check_admin, is_user_ban_protected
+from from MukeshRobot.modules.helper_funcs.chat_status import (
+    is_user_ban_protected,
+    user_admin,
+)
 from MukeshRobot.plugins.helper_funcs.misc import build_keyboard, revert_buttons
 from MukeshRobot.plugins.helper_funcs.msg_types import get_welcome_type
 from MukeshRobot.plugins.helper_funcs.string_handling import escape_invalid_curly_brackets
