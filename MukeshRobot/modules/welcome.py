@@ -12,6 +12,7 @@ from functools import partial
 import unidecode
 from PIL import Image, ImageChops, ImageDraw, ImageFont
 from pyrogram import filters as ft
+from MukeshRobot import pbot as mukesh
 from pyrogram.types import ChatMemberUpdated, Message
 from telegram import ChatPermissions, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram import ParseMode
@@ -117,7 +118,7 @@ async def welcomepic(pic, user, chat, user_id):
     return welcome_image_path
 
 
-@pbot.on_chat_member_updated(ft.group)
+@mukesh.on_chat_member_updated(ft.group)
 async def member_has_joined(client, member: ChatMemberUpdated):
     if (
         not member.new_chat_member
