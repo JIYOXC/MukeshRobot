@@ -18,7 +18,7 @@ from pyrogram.types import ChatMemberUpdated, Message
 from telegram import ChatPermissions, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram import ParseMode
 from telegram.error import BadRequest
-from telegram.ext import CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler, filters
+from telegram.ext import CallbackQueryHandler, CommandHandler, ContextTypes, MessageHandler
 from telegram.utils.helpers import escape_markdown, mention_html, mention_markdown
 
 import MukeshRobot.modules.sql.welcome_sql as sql
@@ -168,7 +168,7 @@ async def member_has_joined(client, member: ChatMemberUpdated):
             pass
 
 
-@mukesh.on_message(filters.command("dwelcome on"))
+@mukesh.on_message(ft.command("dwelcome on"))
 async def enable_welcome(_, message: Message):
     chat_id = message.chat.id
     welcome_enabled = await is_dwelcome_on(chat_id)
@@ -179,7 +179,7 @@ async def enable_welcome(_, message: Message):
     await message.reply_text("New default welcome message enabled for this chat.")
 
 
-@mukesh.on_message(filters.command("dwelcome off"))
+@mukesh.on_message(ft.command("dwelcome off"))
 async def disable_welcome(_, message: Message):
     chat_id = message.chat.id
     welcome_enabled = await is_dwelcome_on(chat_id)
