@@ -1,10 +1,14 @@
 import html
+import os
 import random
 import re
 import time
 from contextlib import suppress
 from functools import partial
-
+from pyrogram.types import ChatMemberUpdated, Message
+import unidecode
+from PIL import Image, ImageChops, ImageDraw, ImageFont
+from pyrogram import filters as ft
 from telegram import (
     ChatPermissions,
     InlineKeyboardButton,
