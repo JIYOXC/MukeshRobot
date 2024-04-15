@@ -45,6 +45,64 @@ from MukeshRobot.modules import ALL_MODULES
 from MukeshRobot.modules.helper_funcs.chat_status import is_user_admin
 from MukeshRobot.modules.helper_funcs.misc import paginate_modules
 
+# <============================================== FUNCTIONS =========================================================>
+async def ai_handler_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    if query.data == "ai_handler":
+        await query.answer()
+        await query.message.edit_text(
+            "🧠 *Artificial Intelligence Functions*:\n\n"
+            "All Commands:\n"
+            "➽ /askgpt <write query>: A chatbot using GPT for responding to user queries.\n\n"
+            "➽ /palm <write prompt>: Performs a Palm search using a chatbot.\n\n"
+            "➽ /upscale <reply to image>: Upscales your image quality.",
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton(
+                            "𝙈𝙊𝙍𝙀 𝙄𝙈𝘼𝙂𝙀 𝙂𝙀𝙉 ➪", callback_data="more_ai_handler"
+                        ),
+                    ],
+                    [
+                        InlineKeyboardButton("» 𝙃𝙊𝙈𝙀 «", callback_data="Miko_back"),
+                    ],
+                ],
+            ),
+        )
+
+
+async def more_ai_handler_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    if query.data == "more_ai_handler":
+        await query.answer()
+        await query.message.edit_text(
+            "*Here's more image gen-related commands*:\n\n"
+            "Command: /meinamix\n"
+            "  • Description: Generates an image using the meinamix model.\n\n"
+            "Command: /darksushi\n"
+            "  • Description: Generates an image using the darksushi model.\n\n"
+            "Command: /meinahentai\n"
+            "  • Description: Generates an image using the meinahentai model.\n\n"
+            "Command: /darksushimix\n"
+            "  • Description: Generates an image using the darksushimix model.\n\n"
+            "Command: /anylora\n"
+            "  • Description: Generates an image using the anylora model.\n\n"
+            "Command: /cetsumix\n"
+            "  • Description: Generates an image using the cetus-mix model.\n\n"
+            "Command: /darkv2\n"
+            "  • Description: Generates an image using the darkv2 model.\n\n"
+            "Command: /creative\n"
+            "  • Description: Generates an image using the creative model.",
+            parse_mode=ParseMode.MARKDOWN,
+            reply_markup=InlineKeyboardMarkup(
+                [
+                    [
+                        InlineKeyboardButton("⇦ 𝘽𝘼𝘾𝙆", callback_data="ai_handler"),
+                    ],
+                ],
+            ),
+        )
 
 def get_readable_time(seconds: int) -> str:
     count = 0
