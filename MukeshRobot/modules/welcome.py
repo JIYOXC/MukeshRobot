@@ -124,9 +124,8 @@ async def welcomepic(pic, user, chat, user_id):
     return welcome_image_path
 
 
-@loggable
 @user_admin
-async def member_has_joined(client, member: ChatMemberUpdated):
+def member_has_joined(client, member: ChatMemberUpdated):
     if (
         not member.new_chat_member
         or member.new_chat_member.status in {"banned", "left", "restricted"}
@@ -180,9 +179,8 @@ async def member_has_joined(client, member: ChatMemberUpdated):
             pass
 
 
-@loggable
 @user_admin
-async def enable_welcome(_, message: Message):
+def enable_welcome(_, message: Message):
     chat_id = message.chat.id
     welcome_enabled = await is_dwelcome_on(chat_id)
     if welcome_enabled:
@@ -192,9 +190,8 @@ async def enable_welcome(_, message: Message):
     await message.reply_text("New default welcome message enabled for this chat.")
 
 
-@loggable
 @user_admin
-async def disable_welcome(_, message: Message):
+def disable_welcome(_, message: Message):
     chat_id = message.chat.id
     welcome_enabled = await is_dwelcome_on(chat_id)
     if not welcome_enabled:
